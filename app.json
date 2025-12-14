@@ -7,16 +7,20 @@
     "icon": "./assets/images/icon.png",
     "scheme": "reactnativeexponativewindtailwind",
     "userInterfaceStyle": "automatic",
+    "sdkVersion": "54.0.0",
     "newArchEnabled": true,
+    "platforms": ["ios", "android", "web"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.reactnativeexponativewindtailwind"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.yourcompany.reactnativeexponativewindtailwind"
     },
     "web": {
       "bundler": "metro",
