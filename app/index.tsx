@@ -1,44 +1,127 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Pressable, StyleSheet, View } from "react-native";
+import { useState } from "react";
+import {
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    StyleSheet,
+    TextInput,
+    View,
+} from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
-export default function WelcomeScreen() {
-  const handleGetStarted = () => {
-    router.push("/main/home");
+export default function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Simulate login API call
+    setTimeout(() => {
+      setIsLoading(false);
+      // For demo purposes, any email/password combination works
+      router.push("/main/home");
+    }, 1000);
+  };
+
+  const handleRegister = () => {
+    router.push("/register");
   };
 
   return (
     <ThemedView style={styles.container}>
-      <View style={styles.content}>
-        <Image
-          source={require("@/assets/images/react-logo.png")}
-          style={styles.logo}
-          contentFit="contain"
-        />
-        
-        <ThemedText type="title" style={styles.title}>
-          Welcome to Your App
-        </ThemedText>
-        
-        <ThemedText style={styles.subtitle}>
-          Built with Expo, React Native, and NativeWind
-        </ThemedText>
-        
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            pressed && styles.buttonPressed
-          ]}
-          onPress={handleGetStarted}
-        >
-          <ThemedText style={styles.buttonText}>
-            Get Started
-          </ThemedText>
-        </Pressable>
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardView}
+      >
+        <View style={styles.content}>
+          {/* Logo Section */}
+          <View style={styles.logoSection}>
+            <Image
+              source={require("@/assets/images/react-logo.png")}
+              style={styles.logo}
+              contentFit="contain"
+            />
+            <ThemedText type="title" style={styles.title}>
+              Welcome Back
+            </ThemedText>
+            <ThemedText style={styles.subtitle}>
+              Sign in to continue to your account
+            </ThemedText>
+          </View>
+
+          {/* Form Section */}
+          <View style={styles.formSection}>
+            <View style={styles.inputContainer}>
+              <ThemedText style={styles.inputLabel}>Email</ThemedText>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your email"
+                placeholderTextColor="#666"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <ThemedText style={styles.inputLabel}>Password</ThemedText>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your password"
+                placeholderTextColor="#666"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                autoCapitalize="none"
+              />
+            </View>
+
+            <Pressable
+              style={({ pressed }) => [
+                styles.loginButton,
+                pressed && styles.buttonPressed,
+                isLoading && styles.buttonDisabled,
+              ]}
+              onPress={handleLogin}
+              disabled={isLoading}
+            >
+              <ThemedText style={styles.loginButtonText}>
+                {isLoading ? "Signing In..." : "Sign In"}
+              </ThemedText>
+            </Pressable>
+
+            <Pressable style={styles.forgotPassword}>
+              <ThemedText style={styles.forgotPasswordText}>
+                Forgot Password?
+              </ThemedText>
+            </Pressable>
+          </View>
+
+          {/* Register Section */}
+          <View style={styles.registerSection}>
+            <ThemedText style={styles.registerText}>
+              Don't have an account?{" "}
+            </ThemedText>
+            <Pressable onPress={handleRegister}>
+              <ThemedText style={styles.registerLink}>Sign Up</ThemedText>
+            </Pressable>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
     </ThemedView>
   );
 }
@@ -46,43 +129,109 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    backgroundColor: "#000",
+  },
+  keyboardView: {
+    flex: 1,
   },
   content: {
+    flex: 1,
+    padding: 24,
+    justifyContent: "center",
+  },
+  logoSection: {
     alignItems: "center",
-    maxWidth: 400,
+    marginBottom: 48,
   },
   logo: {
-    width: 150,
-    height: 150,
-    marginBottom: 40,
+    width: 80,
+    height: 80,
+    marginBottom: 24,
   },
   title: {
-    textAlign: "center",
-    marginBottom: 16,
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 8,
   },
   subtitle: {
+    fontSize: 16,
+    color: "#888",
     textAlign: "center",
-    marginBottom: 40,
-    opacity: 0.7,
   },
-  button: {
+  formSection: {
+    marginBottom: 32,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#fff",
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: "#1a1a1a",
+    borderWidth: 1,
+    borderColor: "#333",
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    color: "#fff",
+  },
+  loginButton: {
     backgroundColor: "#007AFF",
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 25,
-    minWidth: 200,
+    borderRadius: 12,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+    shadowColor: "#007AFF",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  loginButtonText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   buttonPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.85,
+    transform: [{ scale: 0.97 }],
+    backgroundColor: "#0056CC",
   },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
+  buttonDisabled: {
+    opacity: 0.5,
+    backgroundColor: "#004499",
+  },
+  forgotPassword: {
+    alignItems: "center",
+    marginTop: 16,
+  },
+  forgotPasswordText: {
+    color: "#007AFF",
+    fontSize: 16,
+  },
+  registerSection: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  registerText: {
+    color: "#888",
+    fontSize: 16,
+  },
+  registerLink: {
+    color: "#007AFF",
+    fontSize: 16,
     fontWeight: "600",
-    textAlign: "center",
   },
 });
